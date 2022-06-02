@@ -1,0 +1,27 @@
+{
+  "name": "lab-5-vishkujo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2022-Summer-ITE-5425-ONA/lab-5-Vishkujo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/2022-Summer-ITE-5425-ONA/lab-5-Vishkujo/issues"
+  },
+  "homepage": "https://github.com/2022-Summer-ITE-5425-ONA/lab-5-Vishkujo#readme",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mongoose": "^6.3.5",
+    "path": "^0.12.7"
+  }
+}
