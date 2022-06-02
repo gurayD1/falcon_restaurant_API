@@ -13,6 +13,7 @@ const connectionString = dbConfig.url;
 const Menu = require('./models/menu');
 const db = new Menu();
 db.initialize(connectionString);
+app.use(bodyParser.urlencoded({ 'extended': 'true' }));
 
 // Routes
 // Add new food document to collection using the body of the request
