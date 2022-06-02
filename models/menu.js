@@ -13,6 +13,8 @@ MenuSchema = new Schema({
     image: String
 }, { collection: 'foods' });
 
+MenuSchema.set('versionKey', false);
+
 class Menu {
 
     // Create initialize method in menu database class
