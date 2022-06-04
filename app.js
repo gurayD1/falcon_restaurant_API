@@ -1,14 +1,11 @@
 // Import all required modules
 require('dotenv').config()
 var express = require('express');
-<<<<<<< HEAD
 var bodyParser = require('body-parser'); // pull information from HTML POST (express4)
 const jwt = require('jsonwebtoken')
 const session = require('express-session');
-=======
 var bodyParser = require('body-parser');         // pull information from HTML POST (express4)
 let cors = require('cors');
->>>>>>> 9beaa6bfecc347b245155ad3e705fd09f9c9a90c
 
 // Initialize express app
 var port = process.env.PORT || 3000;
@@ -23,7 +20,6 @@ const db = new Menu();
 const dbUser = new User();
 
 db.initialize(connectionString);
-<<<<<<< HEAD
 dbUser.changeModel();
 //dbUser.initialize(connectionString);
 
@@ -69,18 +65,18 @@ app.use(session({
 
 // })
 
-// app.get('/login', function (req, res) {
+// app.get('/login2', function (req, res) {
 
 //     var email = req.query.email;
 //     var password = req.query.password;
-//     getUserByUserEmail
+//    // getUserByUserEmail
 
 //   //  var user = await dbUser.getUserByUserEmail(email);
 
 
-//     if (userName === process.env.UNAME && password === process.env.UPASSWORD) {
+//     if (email === process.env.UNAME && password === process.env.UPASSWORD) {
 //         const user = {
-//             uname: userName,
+//             uname: email,
 //             pswd: password
 //         }
 
@@ -112,7 +108,7 @@ app.post('/login', async function (req, res) {
 
     if(user){
         if(user.password ===password ){
-            res.send("email and password is correct")
+            
 
             const userInfo = {
                 email: email1,
@@ -124,22 +120,24 @@ app.post('/login', async function (req, res) {
             req.session.user = {
                 myToken: token
             };
-
+            res.send("email and password is correct")
 
         }else{
-            res.send("password is not correct")
+            
             token = ""
             req.session.user = {
                 myToken: token
             };
+            res.send("password is not correct")
         }
       
     }else{
-        res.send("not found")
+       
         token = ""
         req.session.user = {
             myToken: token
         };
+        res.send("not found")
     }
 
 
@@ -159,7 +157,7 @@ app.get('/login', async function (req, res) {
 
     if(user){
         if(user.password ===password ){
-            res.send("email and password is correct")
+           
 
             const userInfo = {
                 email: email1,
@@ -172,22 +170,24 @@ app.get('/login', async function (req, res) {
             };
 
             console.log(req.session.user)
-
+            res.send("email and password is correct")
 
         }else{
-            res.send("password is not correct")
+            
             token = ""
             req.session.user = {
                 myToken: token
             };
+            res.send("password is not correct")
         }
       
     }else{
-        res.send("not found")
+       
         token = ""
         req.session.user = {
             myToken: token
         };
+        res.send("not found")
     }
 
 
@@ -313,11 +313,9 @@ app.delete('/user/:id', ensureLogin, async function (req, res) {
 
 
 
-=======
 app.use(bodyParser.urlencoded({ 'extended': 'true' }));
 app.use(cors());
 app.use(express.static('views'));
->>>>>>> 9beaa6bfecc347b245155ad3e705fd09f9c9a90c
 
 // Routes
 app.get('/', function (req, res) {
@@ -430,7 +428,7 @@ app.delete('/foods/:id', ensureLogin, async function (req, res) {
 
 // Check if user is authenticated
 function ensureLogin(req, res, next) {
-    console.log(req.session.userInfo)
+   
     if (req.session.user) {
         token = req.session.user.myToken
         jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
@@ -445,10 +443,10 @@ function ensureLogin(req, res, next) {
 
     } else {
         res.send("you did not login!");
-        //res.redirect("/login");
+        
     }
 
-    console.log( req.session.token)
+    
 }
 
 app.listen(port, () => {
