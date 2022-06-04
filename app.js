@@ -1,9 +1,14 @@
 // Import all required modules
 require('dotenv').config()
 var express = require('express');
+<<<<<<< HEAD
 var bodyParser = require('body-parser'); // pull information from HTML POST (express4)
 const jwt = require('jsonwebtoken')
 const session = require('express-session');
+=======
+var bodyParser = require('body-parser');         // pull information from HTML POST (express4)
+let cors = require('cors');
+>>>>>>> 9beaa6bfecc347b245155ad3e705fd09f9c9a90c
 
 // Initialize express app
 var port = process.env.PORT || 3000;
@@ -18,6 +23,7 @@ const db = new Menu();
 const dbUser = new User();
 
 db.initialize(connectionString);
+<<<<<<< HEAD
 dbUser.changeModel();
 //dbUser.initialize(connectionString);
 
@@ -307,8 +313,17 @@ app.delete('/user/:id', ensureLogin, async function (req, res) {
 
 
 
+=======
+app.use(bodyParser.urlencoded({ 'extended': 'true' }));
+app.use(cors());
+app.use(express.static('views'));
+>>>>>>> 9beaa6bfecc347b245155ad3e705fd09f9c9a90c
 
 // Routes
+app.get('/', function (req, res) {
+    res.send('Menu API');
+});
+
 // Add new food document to collection using the body of the request
 app.post('/foods', ensureLogin, async function (req, res) {
     var newFood = await db.addNewFood(req.body);
