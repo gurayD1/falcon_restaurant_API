@@ -15,6 +15,9 @@ const db = new Menu();
 db.initialize(connectionString);
 app.use(bodyParser.urlencoded({ 'extended': 'true' }));
 
+
+//test guray
+
 // Routes
 // Add new food document to collection using the body of the request
 app.post('/foods', async function (req, res) {
