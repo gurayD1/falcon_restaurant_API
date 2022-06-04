@@ -1,7 +1,7 @@
 // Import all required modules
 require('dotenv').config()
 var express = require('express');
-var bodyParser = require('body-parser'); // pull information from HTML POST (express4)
+//var bodyParser = require('body-parser'); // pull information from HTML POST (express4)
 const jwt = require('jsonwebtoken')
 const session = require('express-session');
 var bodyParser = require('body-parser');         // pull information from HTML POST (express4)
