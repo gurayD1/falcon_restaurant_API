@@ -3,29 +3,27 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 // Create restaurant schema
-MenuSchema = new Schema({
-    food_id: String,
-    food_name: String,
-    price: String,
-    description: String,
-    category: String,
-    active: String,
-    image: String
-}, { collection: 'foods' });
+UserSchema = new Schema({
+    email: String,
+    password: String
+
+}, { collection: 'users' });
+
+UserSchema.set('versionKey', false);
+
+class User {
+
+    changeModel(){
+        this.User = mongoose.model('User', UserSchema);
+    }
 
 
-
-MenuSchema.set('versionKey', false);
-
-class Menu {
-   
     // Create initialize method in menu database class
     async initialize(connectionString) {
-      await  mongoose.connection.close();
         try {
             // Connect to the atlas database
             await mongoose.connect(connectionString);
-            this.Menu = mongoose.model('Menu', MenuSchema);
+            this.User = mongoose.model('User', UserSchema);
             return true;
         } catch (err) {
             console.log(`Could not connect to atlas server, error: '${err}'`);
@@ -34,27 +32,27 @@ class Menu {
     }
 
     // Add a new document in foods collection using data passed
-    async addNewFood(data) {
+    async addNewUser(data) {
         // Create a new menu object with the data inserted
-        var menuNew = new this.Menu(data);
+        var userNew = new this.User(data);
 
         // Save to the database
-        await menuNew.save();
+        await userNew.save();
 
         // Show success message
-        return `${menuNew._id} saved successfully!`;
+        return `${userNew._id} saved successfully!`;
     }
 
     // Get all food from database depending on user input
-    getAllFood() {
-        return this.Menu.find();
+    getAllUsers() {
+        return this.User.find();
     }
 
     // Get food by its id from the database
-    getFoodById(id) {
+    getUserById(id) {
         // Check if it is a valid object ID that the user enters
         if (mongoose.isValidObjectId(id)) {
-            var result = this.Menu.findOne({ _id: id }).lean().exec();
+            var result = this.User.findOne({ _id: id }).lean().exec();
         }
         // Return result or error message
         if (result != null) {
@@ -67,23 +65,19 @@ class Menu {
 
 
     // Get food by its id from the database
-    getFoodByFoodId(id) {
-        var result = this.Menu.findOne({ food_id: id }).lean();
-
-        // Return result or error message
-        if (result != null) {
-            return result;
-        }
+      getUserByUserEmail(email1) {
+      
+        return this.User.findOne({ email: email1 }).lean().exec();
     }
 
     // Update food by using its id
-    async updateFoodById(data, id) {
+    async updateUserById(data, id) {
         // $set replaces each field with the data
         if (mongoose.isValidObjectId(id)) {
-            var result = this.Menu.updateOne({ _id: id }, { $set: data }).lean().exec();
+            var result = this.User.updateOne({ _id: id }, { $set: data }).lean().exec();
         }
         if (result != null) {
-            return `Successful in updating food ${id}!`;
+            return `Successful in updating user ${id}!`;
         }
         else {
             return 'No results found';
@@ -91,14 +85,14 @@ class Menu {
     }
 
     // Deletes food by using its id
-    async deleteFoodById(id) {
+    async deleteUserById(id) {
         // Checks if the id is a valid object id then deletes it from the database
         if (mongoose.isValidObjectId(id)) {
-            var result = this.Menu.deleteOne({ _id: id }).lean().exec();
+            var result = this.User.deleteOne({ _id: id }).lean().exec();
         }
 
         if (result != null) {
-            return `Successful in deleting food ${id}!`;
+            return `Successful in deleting user ${id}!`;
         }
         else {
             return 'No results found';
@@ -107,4 +101,4 @@ class Menu {
 }
 
 // Export the class
-module.exports = Menu;
+module.exports = User;
