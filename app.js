@@ -15,7 +15,13 @@ const db = new Menu();
 db.initialize(connectionString);
 app.use(bodyParser.urlencoded({ 'extended': 'true' }));
 
+app.use(express.static('views'));
+
 // Routes
+app.get('/', function (req, res) {
+    res.send('Menu API');
+});
+
 // Add new food document to collection using the body of the request
 app.post('/foods', async function (req, res) {
     var newFood = await db.addNewFood(req.body);
