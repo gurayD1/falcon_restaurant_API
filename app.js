@@ -2,6 +2,7 @@
 require('dotenv').config()
 var express = require('express');
 var bodyParser = require('body-parser');         // pull information from HTML POST (express4)
+let cors = require('cors');
 
 // Initialize express app
 var port = process.env.PORT || 3000;
@@ -14,7 +15,7 @@ const Menu = require('./models/menu');
 const db = new Menu();
 db.initialize(connectionString);
 app.use(bodyParser.urlencoded({ 'extended': 'true' }));
-
+app.use(cors());
 app.use(express.static('views'));
 
 // Routes
