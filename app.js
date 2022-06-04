@@ -169,7 +169,7 @@ app.get('/login', async function (req, res) {
                 myToken: token
             };
 
-            console.log(req.session.user)
+           // console.log(req.session.user)
             res.send("email and password is correct")
 
         }else{
