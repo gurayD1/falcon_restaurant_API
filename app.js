@@ -245,7 +245,7 @@ app.get('/', function (req, res) {
 });
 
 // Add new food document to collection using the body of the request
-app.post('/foods', ensureLogin, async function (req, res) {
+app.post('/foods', async function (req, res) {
     var newFood = await db.addNewFood(req.body);
     try {
         res.status(201).json({
@@ -299,7 +299,7 @@ app.get('/foods/:id', async function (req, res) {
 });
 
 // Update/overwrite a food in the database using its id
-app.put('/foods/:id', ensureLogin, async function (req, res) {
+app.put('/foods/:id', async function (req, res) {
     // Get the id
     let id = req.params.id
 
@@ -324,7 +324,7 @@ app.put('/foods/:id', ensureLogin, async function (req, res) {
 });
 
 // Delete food from the database using id
-app.delete('/foods/:id', ensureLogin, async function (req, res) {
+app.delete('/foods/:id', async function (req, res) {
     // Get the id
     let id = req.params.id
 
