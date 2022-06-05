@@ -52,10 +52,7 @@ class Menu {
 
     // Get food by its id from the database
     getFoodById(id) {
-        // Check if it is a valid object ID that the user enters
-        if (mongoose.isValidObjectId(id)) {
-            var result = this.Menu.findOne({ _id: id }).lean().exec();
-        }
+        var result = this.Menu.findOne({ food_id: id }).lean().exec();
         // Return result or error message
         if (result != null) {
             return result;
@@ -65,23 +62,10 @@ class Menu {
         }
     }
 
-
-    // Get food by its id from the database
-    getFoodByFoodId(id) {
-        var result = this.Menu.findOne({ food_id: id }).lean();
-
-        // Return result or error message
-        if (result != null) {
-            return result;
-        }
-    }
-
     // Update food by using its id
     async updateFoodById(data, id) {
         // $set replaces each field with the data
-        if (mongoose.isValidObjectId(id)) {
-            var result = this.Menu.updateOne({ _id: id }, { $set: data }).lean().exec();
-        }
+        var result = this.Menu.updateOne({ food_id: id }, { $set: data }).lean().exec();
         if (result != null) {
             return `Successful in updating food ${id}!`;
         }
@@ -92,10 +76,8 @@ class Menu {
 
     // Deletes food by using its id
     async deleteFoodById(id) {
-        // Checks if the id is a valid object id then deletes it from the database
-        if (mongoose.isValidObjectId(id)) {
-            var result = this.Menu.deleteOne({ _id: id }).lean().exec();
-        }
+        // Delete food from the database
+        var result = this.Menu.deleteOne({ food_id: id }).lean().exec();
 
         if (result != null) {
             return `Successful in deleting food ${id}!`;
