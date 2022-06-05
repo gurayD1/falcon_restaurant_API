@@ -22,8 +22,10 @@ db.initialize(connectionString);
 dbUser.changeModel();
 //dbUser.initialize(connectionString);
 
+
+app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
-    'extended': 'true'
+    'extended': 'false'
 }));
 
 app.use(cors());
