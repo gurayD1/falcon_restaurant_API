@@ -1,7 +1,6 @@
 // Import all required modules
 require('dotenv').config()
 var express = require('express');
-//var bodyParser = require('body-parser'); // pull information from HTML POST (express4)
 const jwt = require('jsonwebtoken')
 const session = require('express-session');
 var bodyParser = require('body-parser');         // pull information from HTML POST (express4)
@@ -27,6 +26,9 @@ app.use(bodyParser.urlencoded({
     'extended': 'true'
 }));
 
+app.use(cors());
+app.use(express.static('views'));
+
 var token;
 
 // Configure session
@@ -36,117 +38,51 @@ app.use(session({
     resave: true
 }));
 
-
 // Routes, post request
-// login to api to use it
-// app.post('/login', function (req, res) {
-//     var userName = req.body.userName;
-//     var password = req.body.password;
-
-//     if (userName === process.env.UNAME && password === process.env.UPASSWORD) {
-//         const user = {
-//             uname: userName,
-//             pswd: password
-//         }
-
-//         token = jwt.sign(user, process.env.ACCESS_TOKEN)
-//         req.session.user = {
-//             myToken: token
-//         };
-
-//         res.json("you logged in successfully")
-//     } else {
-//         token = "";
-//         req.session.user = {
-//             myToken: token
-//         };
-//         res.send(' username or password is not correct');
-//     }
-
-// })
-
-// app.get('/login2', function (req, res) {
-
-//     var email = req.query.email;
-//     var password = req.query.password;
-//    // getUserByUserEmail
-
-//   //  var user = await dbUser.getUserByUserEmail(email);
-
-
-//     if (email === process.env.UNAME && password === process.env.UPASSWORD) {
-//         const user = {
-//             uname: email,
-//             pswd: password
-//         }
-
-//         token = jwt.sign(user, process.env.ACCESS_TOKEN)
-//         req.session.user = {
-//             myToken: token
-//         };
-
-//         res.json("you logged in successfully")
-//     } else {
-//         token = "";
-//         req.session.user = {
-//             myToken: token
-//         };
-//         res.send('username or password is not correct');
-//     }
-
-// });
-
-
-//routes, post request
-// login to API to use it
+// Login to API to use it
 app.post('/login', async function (req, res) {
 
     var email1 = req.body.email;
     var password = req.body.password;
 
-   var user = await dbUser.getUserByUserEmail(email1);
+    var user = await dbUser.getUserByUserEmail(email1);
 
-    if(user){
-        if(user.password ===password ){
-            
+    if (user) {
+        if (user.password === password) {
 
             const userInfo = {
                 email: email1,
                 pswd: password
             }
-    
+
             token = jwt.sign(userInfo, process.env.ACCESS_TOKEN)
             req.session.token = token
             req.session.user = {
                 myToken: token
             };
-            res.send("email and password is correct")
+            res.send("Email and password is correct")
 
-        }else{
-            
+        } else {
+
             token = ""
             req.session.user = {
                 myToken: token
             };
-            res.send("password is not correct")
+            res.send("Password is not correct")
         }
-      
-    }else{
-       
+
+    } else {
+
         token = ""
         req.session.user = {
             myToken: token
         };
-        res.send("not found")
+        res.send("User not found!")
     }
-
-
 });
 
-
-
-//routes, get request
-// login to API to use it
+// Routes, get request
+// Login to API to use it
 //http://localhost:3000/login?email=admin@email.com&password=1234
 app.get('/login', async function (req, res) {
 
@@ -155,55 +91,46 @@ app.get('/login', async function (req, res) {
 
     var user = await dbUser.getUserByUserEmail(email1);
 
-    if(user){
-        if(user.password ===password ){
-           
-
+    if (user) {
+        if (user.password === password) {
             const userInfo = {
                 email: email1,
                 pswd: password
             }
-    
+
             token = jwt.sign(userInfo, process.env.ACCESS_TOKEN)
             req.session.user = {
                 myToken: token
             };
 
-           // console.log(req.session.user)
-            res.send("email and password is correct")
+            // console.log(req.session.user)
+            res.send("Email and password is correct")
 
-        }else{
-            
+        } else {
             token = ""
             req.session.user = {
                 myToken: token
             };
-            res.send("password is not correct")
+            res.send("Password is not correct")
         }
-      
-    }else{
-       
+
+    } else {
         token = ""
         req.session.user = {
             myToken: token
         };
-        res.send("not found")
+        res.send("User not found!")
     }
-
-
 });
-
-
 
 // Log a user out by destroying their session and redirecting them to /login
 app.get("/logout", function (req, res) {
     req.session.destroy();
-    res.send("you logged out")
-   // res.redirect("/login");
+    res.send("You are now logged out.")
+    // res.redirect("/login");
 });
 
-//routes
-// create a new user
+// Create a new user
 app.post('/registration', async function (req, res) {
 
     var newUser = await dbUser.addNewUser(req.body);
@@ -219,7 +146,6 @@ app.post('/registration', async function (req, res) {
 
 })
 
-//routes
 // Get all users
 app.get('/allusers', ensureLogin, async function (req, res) {
 
@@ -229,7 +155,7 @@ app.get('/allusers', ensureLogin, async function (req, res) {
             res.status(200).json(result);
         } else {
             res.status(404).json({
-                error: 'There is no users!',
+                error: 'There are no users!',
             })
         }
     } catch (err) {
@@ -311,13 +237,7 @@ app.delete('/user/:id', ensureLogin, async function (req, res) {
     }
 });
 
-
-
-app.use(bodyParser.urlencoded({ 'extended': 'true' }));
-app.use(cors());
-app.use(express.static('views'));
-
-// Routes
+// Root
 app.get('/', function (req, res) {
     res.send('Menu API');
 });
@@ -337,7 +257,7 @@ app.post('/foods', ensureLogin, async function (req, res) {
 })
 
 // Get all food objects
-app.get('/foods', ensureLogin, async function (req, res) {
+app.get('/foods', async function (req, res) {
     var result = await db.getAllFood();
     try {
         if (result.length > 0) {
@@ -355,7 +275,7 @@ app.get('/foods', ensureLogin, async function (req, res) {
 });
 
 // Retrieves food which has a specific id from the database
-app.get('/foods/:id', ensureLogin, async function (req, res) {
+app.get('/foods/:id', async function (req, res) {
     // Get the id
     let id = req.params.id
     var result = await db.getFoodById(id);
@@ -428,7 +348,7 @@ app.delete('/foods/:id', ensureLogin, async function (req, res) {
 
 // Check if user is authenticated
 function ensureLogin(req, res, next) {
-   
+
     if (req.session.user) {
         token = req.session.user.myToken
         jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
@@ -443,10 +363,10 @@ function ensureLogin(req, res, next) {
 
     } else {
         res.send("you did not login!");
-        
+
     }
 
-    
+
 }
 
 app.listen(port, () => {
