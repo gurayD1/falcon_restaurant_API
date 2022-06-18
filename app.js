@@ -15,8 +15,12 @@ var dbConfig = require('./config/database');
 const connectionString = dbConfig.url;
 const Menu = require('./models/menu');
 const User = require('./models/users');
+const Newsletter = require('./models/newsletter');
+const Booking = require('./models/booking');
 const db = new Menu();
 const dbUser = new User();
+const newsdb = new Newsletter();
+const bookingdb = new Booking();
 
 db.initialize(connectionString);
 dbUser.changeModel();
@@ -347,6 +351,97 @@ app.delete('/foods/:id', async function (req, res) {
     }
 });
 
+//add a new subscriber to the newsletter
+app.post('/newsletter', async function (req, res) {
+    var newSub = await newsdb.addNewSubscriber(req.body)
+
+    // Show result or error message
+    try {
+        res.status(201).json({
+            message: newSub
+        });
+    } catch (err) {
+        res.status(400).json({
+            error: err
+        });
+    }
+})
+
+//get all subscribers
+app.get('/newsletter', async function (req, res) {
+    var result = await newsdb.getAllSubscribers();
+
+    // Show result or error message
+    try {
+        if (result.length > 0) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({
+                error: 'There is no Subscriber!',
+            })
+        }
+    } catch (err) {
+        res.status(400).json({
+            error: `${err}`
+        })
+    }
+});
+
+//add a new booking/reservation
+app.post('/bookings', async function (req, res) {
+    var newBooking = await bookingdb.addBooking(req.body);
+
+    // Show result or error message
+    try {
+        res.status(201).json({
+            message: newBooking
+        });
+    } catch (err) {
+        res.status(400).json({
+            error: err
+        });
+    }
+})
+
+//get all reservations
+app.get('/bookings', async function (req, res) {
+    var result = await bookingdb.getAllBookings();
+
+    // Show result or error message
+    try {
+        if (result.length > 0) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({
+                error: 'There is no Subscriber!',
+            })
+        }
+    } catch (err) {
+        res.status(400).json({
+            error: `${err}`
+        })
+    }
+});
+
+// Delete a booking/reservation from the database
+app.delete('/bookings', ensureLogin, async function (req, res) {
+    var result = await bookingdb.deleteBooking(req.body)
+    try {
+        if (result) {
+            res.status(200).json({
+                message: result
+            });
+        } else {
+            res.status(404).json({
+                error: 'There are no booking!'
+            });
+        }
+    } catch {
+        res.status(400).json({
+            error_message: `Error occurred when deleting the booking`
+        });
+    }
+});
 
 // Check if user is authenticated
 function ensureLogin(req, res, next) {
