@@ -423,6 +423,21 @@ app.get('/bookings', async function (req, res) {
     }
 });
 
+app.post('/contact', async function(req, res){
+    const {fname, lname, email, subject} = req.body
+
+    const message = fname + " " + lname + " " + subject
+    const response = await SendEmail(email, 'Inquiry', message);
+    if (response == "Successful") {
+        res
+            .status(201)
+            .json({ message: "Email sent!" });
+    }
+    else {
+        return res.status(404).json({ errors: "Unable to send email" });
+    }
+})
+
 // Delete a booking/reservation from the database
 app.delete('/bookings', ensureLogin, async function (req, res) {
     var result = await bookingdb.deleteBooking(req.body)
