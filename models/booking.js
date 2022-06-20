@@ -1,9 +1,11 @@
+const { uuid } = require('uuidv4');
+
 // Load mongoose since we need it to define a model
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 BookingSchema = new Schema({
-    id : {type: String, default: uuid.v4},
+    id : {type: String, default: uuid},
     date : Date,
     time_slot : String,
     name: String,
