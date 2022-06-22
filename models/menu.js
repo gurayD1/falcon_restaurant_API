@@ -14,7 +14,6 @@ MenuSchema = new Schema({
 }, { collection: 'foods' });
 
 
-
 MenuSchema.set('versionKey', false);
 
 class Menu {

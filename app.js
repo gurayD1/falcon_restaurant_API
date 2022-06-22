@@ -24,6 +24,8 @@ const bookingdb = new Booking();
 
 db.initialize(connectionString);
 dbUser.changeModel();
+newsdb.initialize(connectionString);
+bookingdb.initialize(connectionString)
 //dbUser.initialize(connectionString);
 
 

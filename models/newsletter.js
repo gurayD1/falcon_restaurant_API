@@ -1,13 +1,14 @@
 const { uuid } = require('uuidv4');
 
 var mongoose = require('mongoose');
+// var url = require('../config/database')
 var Schema = mongoose.Schema;
 
 NewsSchema = new Schema({
     id : {type: String, default: uuid},
     first_name: String,
     email: String
-}, { collection: 'newsletter' });
+}, { collection: 'newsletters' });
 
 NewsSchema.set('versionKey', false);
 
@@ -19,6 +20,7 @@ class Newsletter{
               // Connect to the atlas database
               await mongoose.connect(connectionString);
               this.Newsletter = mongoose.model('Newsletter', NewsSchema);
+              console.log("connected")
               return true;
           } catch (err) {
               console.log(`Could not connect to atlas server, error: '${err}'`);
@@ -29,8 +31,8 @@ class Newsletter{
       async addNewSubscriber(data) {
         console.log(data)
         // Create a new subscriber object with the data inserted
-        var subNew = new Newsletter(data)
-
+        var subNew = new this.Newsletter(data)
+        console.log(subNew.email)
         // Save to the database
         await subNew.save()
                       
