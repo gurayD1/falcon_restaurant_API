@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');         // pull information from HTML P
 let cors = require('cors');
 
 // Initialize express app
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8000;
 var app = express();
 
 // Configure the database
@@ -17,6 +17,7 @@ const Menu = require('./models/menu');
 const User = require('./models/users');
 const Newsletter = require('./models/newsletter');
 const Booking = require('./models/booking');
+const SendEmail = require('./utils/SendEmail')
 const db = new Menu();
 const dbUser = new User();
 const newsdb = new Newsletter();
@@ -428,7 +429,7 @@ app.get('/bookings', async function (req, res) {
 app.post('/contact', async function(req, res){
     const {fname, lname, email, subject} = req.body
 
-    const message = fname + " " + lname + " " + subject
+    const message = "From " + email + " "+fname + " " + lname + " " + subject
     const response = await SendEmail(email, 'Inquiry', message);
     if (response == "Successful") {
         res

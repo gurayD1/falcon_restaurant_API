@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer'
+const nodemailer = require('nodemailer')
 
 //using nodemailer, message is sent to the restaurant
 const SendEmail = async(email, subject, text) => {
@@ -13,7 +13,7 @@ const SendEmail = async(email, subject, text) => {
 
 		await transporter.sendMail({
 			from: 'temmitayolawal35@gmail.com',
-			to: email,
+			to: 'temmitayolawal35@gmail.com',
 			subject: subject,
 			text: text,
 		});
@@ -25,4 +25,4 @@ const SendEmail = async(email, subject, text) => {
 	}
 }
 
-export default SendEmail
+module.exports = SendEmail;
