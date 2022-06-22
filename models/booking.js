@@ -32,7 +32,7 @@ class Booking{
 
       async addBooking(data) {
         // Create a new subscriber object with the data inserted
-        var booking = new this.News(data);
+        var booking = new this.Booking(data);
 
         // Save to the database
         await booking.save();

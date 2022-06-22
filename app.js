@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');         // pull information from HTML P
 let cors = require('cors');
 
 // Initialize express app
-var port = process.env.PORT || 8000;
+var port = process.env.PORT || 3000;
 var app = express();
 
 // Configure the database
