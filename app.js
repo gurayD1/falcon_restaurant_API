@@ -3,7 +3,8 @@ require('dotenv').config()
 var express = require('express');
 const jwt = require('jsonwebtoken')
 const session = require('express-session');
-var bodyParser = require('body-parser');         // pull information from HTML POST (express4)
+const bcrypt = require('bcryptjs');
+var bodyParser = require('body-parser'); // pull information from HTML POST (express4)
 let cors = require('cors');
 
 // Initialize express app
@@ -38,14 +39,14 @@ app.use(bodyParser.urlencoded({
 app.use(cors());
 app.use(express.static('views'));
 
-var token;
+//var token;
 
 // Configure session
-app.use(session({
-    secret: 'secretdb_groupproject_sshhhhh99281',
-    saveUninitialized: true,
-    resave: true
-}));
+// app.use(session({
+//     secret: 'secretdb_groupproject_sshhhhh99281',
+//     saveUninitialized: true,
+//     resave: true
+// }));
 
 // Routes, post request
 // Login to API to use it
@@ -54,104 +55,183 @@ app.post('/login', async function (req, res) {
     var email1 = req.body.email;
     var password = req.body.password;
 
-    var user = await dbUser.getUserByUserEmail(email1);
+    try {
+        var user = await dbUser.getUserByUserEmail(email1);
 
-    if (user) {
-        if (user.password === password) {
+        if (user) {
 
-            const userInfo = {
-                email: email1,
-                pswd: password
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) {
+                return res.status(400).json({
+                    errors: 'password is not correct'
+                });
+            }
+            if (isMatch) {
+
+
+
+                const payload = {
+                    user: {
+                        id: user.id,
+                        email: user.email,
+                    },
+                };
+
+
+                jwt.sign(
+                    payload,
+                    process.env.ACCESS_TOKEN, {
+                        expiresIn: 36000
+                    },
+                    (err, token) => {
+                        if (err) throw err;
+                        res.json({
+                            token
+                        });
+                    }
+                );
+
+
             }
 
-            token = jwt.sign(userInfo, process.env.ACCESS_TOKEN)
-            req.session.token = token
-            req.session.user = {
-                myToken: token
-            };
-            res.send("Email and password is correct")
-
         } else {
-
-            token = ""
-            req.session.user = {
-                myToken: token
-            };
-            res.send("Password is not correct")
+            return res.status(400).json({
+                errors: 'user not found'
+            });
         }
-
-    } else {
-
-        token = ""
-        req.session.user = {
-            myToken: token
-        };
-        res.send("User not found!")
+    } catch (err) {
+        console.log(err.message);
+        return res.status(500).json({
+            error: 'Server error'
+        });
     }
 });
 
 // Routes, get request
 // Login to API to use it
 //http://localhost:3000/login?email=admin@email.com&password=1234
-app.get('/login', async function (req, res) {
+// app.get('/login', async function (req, res) {
 
-    var email1 = req.query.email;
-    var password = req.query.password;
+//     var email1 = req.query.email;
+//     var password = req.query.password;
 
-    var user = await dbUser.getUserByUserEmail(email1);
+//     var user = await dbUser.getUserByUserEmail(email1);
 
-    if (user) {
-        if (user.password === password) {
-            const userInfo = {
-                email: email1,
-                pswd: password
-            }
+//     if (user) {
+//         if (user.password === password) {
+//             const userInfo = {
+//                 email: email1,
+//                 pswd: password
+//             }
 
-            token = jwt.sign(userInfo, process.env.ACCESS_TOKEN)
-            req.session.user = {
-                myToken: token
-            };
+//             token = jwt.sign(userInfo, process.env.ACCESS_TOKEN)
+//             req.session.user = {
+//                 myToken: token
+//             };
 
-            // console.log(req.session.user)
-            res.send("Email and password is correct")
+//             // console.log(req.session.user)
+//             res.send("Email and password is correct")
 
-        } else {
-            token = ""
-            req.session.user = {
-                myToken: token
-            };
-            res.send("Password is not correct")
-        }
+//         } else {
+//             token = ""
+//             req.session.user = {
+//                 myToken: token
+//             };
+//             res.send("Password is not correct")
+//         }
 
-    } else {
-        token = ""
-        req.session.user = {
-            myToken: token
-        };
-        res.send("User not found!")
-    }
-});
+//     } else {
+//         token = ""
+//         req.session.user = {
+//             myToken: token
+//         };
+//         res.send("User not found!")
+//     }
+// });
 
 // Log a user out by destroying their session and redirecting them to /login
-app.get("/logout", function (req, res) {
-    req.session.destroy();
-    res.send("You are now logged out.")
-    // res.redirect("/login");
-});
+// app.get("/logout", function (req, res) {
+//     req.session.destroy();
+//     res.send("You are now logged out.")
+//     // res.redirect("/login");
+// });
 
 // Create a new user
 app.post('/registration', async function (req, res) {
-
-    var newUser = await dbUser.addNewUser(req.body);
+    let email1 = req.body.email
     try {
-        res.status(201).json({
-            message: newUser
-        });
+
+        console.log(email1)
+        var user1 = await dbUser.getUserByUserEmail(email1);
+
+
+        if (user1) {
+            console.log(user1)
+            return res.status(400).json({
+                errors: 'User already exist'
+            });
+        }else{
+            console.log("you can register")
+        }
+
+       const salt = await bcrypt.genSalt(10);
+       console.log(salt)
+       console.log(req.body.password)
+        const password = await bcrypt.hash(req.body.password, salt);
+        console.log(password)
+        req.body.password = password
+
+        // const newUser = new User({
+        //   name: req.body.name,
+        //   email: req.body.email,
+        //   password: password,
+        // });
+        // await newUser.save();
+
+        var newUser = await dbUser.addNewUser(req.body);
+
+
+        const payload = {
+            user: {
+                id: newUser.id,
+                email: newUser.email,
+            },
+        };
+
+
+        //   jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) 
+
+        jwt.sign(
+            payload,
+            process.env.ACCESS_TOKEN, {
+                expiresIn: 36000
+            },
+            (err, token) => {
+                if (err) throw err;
+                res.json({
+                    token
+                });
+            }
+        );
     } catch (err) {
-        res.status(400).json({
-            error: err
+        console.log(err.message);
+        return res.status(500).json({
+            error: 'Server error'
         });
     }
+
+    // var newUser = await dbUser.addNewUser(req.body);
+
+
+    // try {
+    //     res.status(201).json({
+    //         message: newUser
+    //     });
+    // } catch (err) {
+    //     res.status(400).json({
+    //         error: err
+    //     });
+    // }
 
 })
 
@@ -426,18 +506,26 @@ app.get('/bookings', async function (req, res) {
     }
 });
 
-app.post('/contact', async function(req, res){
-    const {fname, lname, email, subject} = req.body
+app.post('/contact', async function (req, res) {
+    const {
+        fname,
+        lname,
+        email,
+        subject
+    } = req.body
 
-    const message = "From " + email + " "+fname + " " + lname + " " + subject
+    const message = "From " + email + " " + fname + " " + lname + " " + subject
     const response = await SendEmail(email, 'Inquiry', message);
     if (response == "Successful") {
         res
             .status(201)
-            .json({ message: "Email sent!" });
-    }
-    else {
-        return res.status(404).json({ errors: "Unable to send email" });
+            .json({
+                message: "Email sent!"
+            });
+    } else {
+        return res.status(404).json({
+            errors: "Unable to send email"
+        });
     }
 })
 
@@ -464,22 +552,41 @@ app.delete('/bookings', ensureLogin, async function (req, res) {
 // Check if user is authenticated
 function ensureLogin(req, res, next) {
 
-    if (req.session.user) {
-        token = req.session.user.myToken
-        jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
 
-            if (err) {
-                console.log('error')
-                res.send(err);
-            } else {
-                next();
-            }
-        });
+    const token = req.header('x-auth-token');
+    console.log(token)
 
-    } else {
-        res.send("you did not login!");
+  if (!token) {
+    return res
+      .status(400)
+      .json({ error: 'no token found, authorization denied' });
+  }
 
-    }
+  try {
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
+    console.log(decoded);
+    req.user = decoded.user;
+    next();
+  } catch (err) {
+    return res.status(400).json({ error: 'token is not valid' });
+  }
+
+    // if (req.session.user) {
+    //     token = req.session.user.myToken
+    //     jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
+
+    //         if (err) {
+    //             console.log('error')
+    //             res.send(err);
+    //         } else {
+    //             next();
+    //         }
+    //     });
+
+    // } else {
+    //     res.send("you did not login!");
+
+    // }
 
 
 }
