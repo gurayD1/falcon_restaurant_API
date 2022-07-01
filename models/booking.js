@@ -1,4 +1,5 @@
 const { uuid } = require('uuidv4');
+const SendEmail = require('../utils/SendEmail')
 
 // Load mongoose since we need it to define a model
 var mongoose = require('mongoose');
@@ -37,6 +38,23 @@ class Booking{
         // Save to the database
         await booking.save();
 
+        //send booking details to email
+        const message = `<p>Thank you for making a reservation.</p> 
+        <p>Here are your booking details: </p>
+        <ul>
+        <li>Reservation Name: ${data.name}</li>
+        <li>Reservation Time: ${data.time_slot}</li>
+        <li>Reservation Date: ${data.date}</li>
+        <li>Phone Number: ${data.phoneno}</li>
+
+        </ul><br/><br/><br/>
+        <p><i>We look forward to hosting you!</i></p>`
+        const response = await SendEmail( 'Booking Details', message, data.email);
+        if (response != "Successful") {
+            return res.status(404).json({
+                errors: "Unable to send email"
+            });
+        }
         // Show success message
         return `You have successfully made a reservation ${booking.name}!`;
     }

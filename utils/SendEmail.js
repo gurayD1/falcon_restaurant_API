@@ -1,21 +1,22 @@
 const nodemailer = require('nodemailer')
+require('dotenv').config()
 
 //using nodemailer, message is sent to the restaurant
-const SendEmail = async(email, subject, text) => {
+const SendEmail = async( subject, text, to) => {
     try {
 		const transporter = nodemailer.createTransport({
 			service: 'gmail',
 			auth: {
-				user: 'temmitayolawal35@gmail.com',
-				pass: 'eafnlebrlbotkxtf',
+				user: process.env.EMAIL_USER,
+				pass: process.env.EMAIL_PASS,
 			},
 		});
 
 		await transporter.sendMail({
-			from: 'temmitayolawal35@gmail.com',
-			to: 'temmitayolawal35@gmail.com',
+			from: process.env.EMAIL_USER,
+			to: to,
 			subject: subject,
-			text: text,
+			html: text,
 		});
 	return "Successful"
 	} catch (error) {

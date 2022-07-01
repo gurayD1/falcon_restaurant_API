@@ -514,9 +514,15 @@ app.post('/contact', async function (req, res) {
         subject
     } = req.body
 
+    //send inquiry to host 
     const message = "From " + email + " " + fname + " " + lname + " " + subject
-    const response = await SendEmail(email, 'Inquiry', message);
-    if (response == "Successful") {
+    const response = await SendEmail('Inquiry', message, "temmitayolawal35@gmail.com");
+ 
+    //send confirmation of inquiry sent
+    const recievedInquiry = `<p>Do not respond to this email.</p> <p>We have recieved your inquiry ${fname}.</p>
+    <p>We will get back to you as soon as possible.</p>`
+    const updateSent = await SendEmail( 'Inquiry', recievedInquiry, email);
+    if (response == "Successful" && updateSent == "Successful") {
         res
             .status(201)
             .json({

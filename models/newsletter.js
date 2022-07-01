@@ -1,5 +1,5 @@
 const { uuid } = require('uuidv4');
-
+const SendEmail = require('../utils/SendEmail')
 var mongoose = require('mongoose');
 // var url = require('../config/database')
 var Schema = mongoose.Schema;
@@ -33,10 +33,19 @@ class Newsletter{
         // Create a new subscriber object with the data inserted
         var subNew = new this.Newsletter(data)
         console.log(subNew.email)
+
         // Save to the database
         await subNew.save()
                       
 
+        //send subscription confirmation email.
+        const message = `<p>Thank you for Subscribing to our newsletter ${subNew.first_name}.</p> <p>We are excited to keep you up to date with our lastest deals and menu.</p>`
+        const response = await SendEmail( 'Subscribe to Newsletter', message, subNew.email);
+        if (response != "Successful") {
+            return res.status(404).json({
+                errors: "Unable to send email"
+            });
+        }
         // Show success message
         return `${subNew.email} saved successfully!`;
     }
