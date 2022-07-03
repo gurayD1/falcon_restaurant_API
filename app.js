@@ -24,11 +24,13 @@ const db = new Menu();
 const dbUser = new User();
 const newsdb = new Newsletter();
 const bookingdb = new Booking();
+const reviewsdb = new Reviews();
 
 db.initialize(connectionString);
 dbUser.changeModel();
 newsdb.initialize(connectionString);
-bookingdb.initialize(connectionString)
+bookingdb.initialize(connectionString);
+reviewsdb.initialize(connectionString);
 //dbUser.initialize(connectionString);
 
 
@@ -558,7 +560,7 @@ app.delete('/bookings', ensureLogin, async function (req, res) {
 
 // Get all reviews
 app.get('/reviews', async function (req, res) {
-    var result = await db.getAllReviews();
+    var result = await reviewsdb.getAllReviews();
     try {
         if (result.length > 0) {
             res.status(200).json(result);
@@ -578,7 +580,7 @@ app.get('/reviews', async function (req, res) {
 app.get('/reviews/:id', async function (req, res) {
     // Get the id
     let id = req.params.id
-    var result = await db.getReviewById(id);
+    var result = await reviewsdb.getReviewById(id);
 
     // Show result or error message
     try {
@@ -602,7 +604,7 @@ app.delete('/reviews/:id', async function (req, res) {
     let id = req.params.id
 
     // Delete the review
-    var result = await db.deleteReviewById(id);
+    var result = await reviewsdb.deleteReviewById(id);
     try {
         if (result) {
             res.status(200).json({
