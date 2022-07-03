@@ -18,6 +18,7 @@ const Menu = require('./models/menu');
 const User = require('./models/users');
 const Newsletter = require('./models/newsletter');
 const Booking = require('./models/booking');
+const Reviews = require('./models/reviews');
 const SendEmail = require('./utils/SendEmail')
 const db = new Menu();
 const dbUser = new User();
@@ -554,6 +555,71 @@ app.delete('/bookings', ensureLogin, async function (req, res) {
         });
     }
 });
+
+// Get all reviews
+app.get('/reviews', async function (req, res) {
+    var result = await db.getAllReviews();
+    try {
+        if (result.length > 0) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({
+                error: 'There are no reviews!',
+            })
+        }
+    } catch (err) {
+        res.status(400).json({
+            error: `${err}`
+        })
+    }
+});
+
+// Retrieves review which has a specific id from the database
+app.get('/reviews/:id', async function (req, res) {
+    // Get the id
+    let id = req.params.id
+    var result = await db.getReviewById(id);
+
+    // Show result or error message
+    try {
+        if (result) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({
+                error: 'There are no review matches with that ID!'
+            });
+        }
+    } catch (err) {
+        res.status(400).json({
+            error: err
+        });
+    }
+});
+
+// Delete review from the database using id
+app.delete('/reviews/:id', async function (req, res) {
+    // Get the id
+    let id = req.params.id
+
+    // Delete the review
+    var result = await db.deleteReviewById(id);
+    try {
+        if (result) {
+            res.status(200).json({
+                message: result
+            });
+        } else {
+            res.status(404).json({
+                error: 'There are no review matches with that ID!'
+            });
+        }
+    } catch {
+        res.status(400).json({
+            error_message: `Error occurred when deleting a review with id: ${id}, ${error}`
+        });
+    }
+});
+
 
 // Check if user is authenticated
 function ensureLogin(req, res, next) {
