@@ -29,12 +29,12 @@ class Reviews {
         }
     }
 
-    // Get all food from database depending on user input
+    // Get all reviews from database depending on user input
     getAllReviews() {
         return this.Reviews.find();
     }
 
-    // Get food by its id from the database
+    // Get review by its id from the database
     getReviewById(id) {
         var result = this.Reviews.findOne({ id: id }).lean().exec();
         // Return result or error message
@@ -58,9 +58,9 @@ class Reviews {
         return `${reviewsNew._id} saved successfully!`;
     }
 
-    // Deletes food by using its id
+    // Deletes review by using its id
     async deleteReviewById(id) {
-        // Delete food from the database
+        // Delete reviews from the database
         var result = this.Reviews.deleteOne({ _id: id }).lean().exec();
 
         if (result != null) {
