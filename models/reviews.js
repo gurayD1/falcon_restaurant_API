@@ -21,7 +21,7 @@ class Reviews {
         try {
             // Connect to the atlas database
             await mongoose.connect(connectionString);
-            this.Reviews = mongoose.model('Review', ReviewSchema);
+            this.Reviews = mongoose.model('Reviews', ReviewSchema);
             return true;
         } catch (err) {
             console.log(`Could not connect to atlas server, error: '${err}'`);
