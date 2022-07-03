@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 ReviewsSchema = new Schema({
     name: String,
     rating: String,
-    review: String,
+    review: String
 }, { collection: 'reviews' });
 
 
