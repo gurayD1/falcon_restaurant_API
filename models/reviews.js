@@ -7,7 +7,6 @@ ReviewsSchema = new Schema({
     name: String,
     rating: String,
     review: String,
-    id: String
 }, { collection: 'reviews' });
 
 
