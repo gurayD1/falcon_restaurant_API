@@ -64,7 +64,7 @@ class Reviews {
         var result = this.Reviews.deleteOne({ _id: id }).lean().exec();
 
         if (result != null) {
-            return `Successful in deleting food ${id}!`;
+            return `Successful in deleting review ${id}!`;
         }
         else {
             return 'No results found';
