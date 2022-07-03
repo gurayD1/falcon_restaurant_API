@@ -598,6 +598,20 @@ app.get('/reviews/:id', async function (req, res) {
     }
 });
 
+// Add new reviews document to collection using the body of the request
+app.post('/reviews', async function (req, res) {
+    var newReview = await reviewsdb.addNewReview(req.body);
+    try {
+        res.status(201).json({
+            message: newReview
+        });
+    } catch (err) {
+        res.status(400).json({
+            error: err
+        });
+    }
+})
+
 // Delete review from the database using id
 app.delete('/reviews/:id', async function (req, res) {
     // Get the id

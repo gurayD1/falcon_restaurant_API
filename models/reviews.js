@@ -14,10 +14,10 @@ ReviewsSchema = new Schema({
 ReviewsSchema.set('versionKey', false);
 
 class Reviews {
-   
+
     // Create initialize method in menu database class
     async initialize(connectionString) {
-      await  mongoose.connection.close();
+        await mongoose.connection.close();
         try {
             // Connect to the atlas database
             await mongoose.connect(connectionString);
@@ -44,6 +44,18 @@ class Reviews {
         else {
             return 'No results found';
         }
+    }
+
+    // Add a new document in reviews collection using data passed
+    async addNewReview(data) {
+        // Create a new reviews object with the data inserted
+        var reviewsNew = new this.Reviews(data);
+
+        // Save to the database
+        await reviewsNew.save();
+
+        // Show success message
+        return `${reviewsNew._id} saved successfully!`;
     }
 
     // Deletes food by using its id
