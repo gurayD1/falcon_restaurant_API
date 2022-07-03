@@ -576,28 +576,6 @@ app.get('/reviews', async function (req, res) {
     }
 });
 
-// Retrieves review which has a specific id from the database
-app.get('/reviews/:id', async function (req, res) {
-    // Get the id
-    let id = req.params.id
-    var result = await reviewsdb.getReviewById(id);
-
-    // Show result or error message
-    try {
-        if (result) {
-            res.status(200).json(result);
-        } else {
-            res.status(404).json({
-                error: 'There are no review matches with that ID!'
-            });
-        }
-    } catch (err) {
-        res.status(400).json({
-            error: err
-        });
-    }
-});
-
 // Add new reviews document to collection using the body of the request
 app.post('/reviews', async function (req, res) {
     var newReview = await reviewsdb.addNewReview(req.body);

@@ -33,18 +33,6 @@ class Reviews {
         return this.Reviews.find();
     }
 
-    // Get review by its id from the database
-    getReviewById(id) {
-        var result = this.Reviews.findOne({ id: id }).lean().exec();
-        // Return result or error message
-        if (result != null) {
-            return result;
-        }
-        else {
-            return 'No results found';
-        }
-    }
-
     // Add a new document in reviews collection using data passed
     async addNewReview(data) {
         // Create a new reviews object with the data inserted
