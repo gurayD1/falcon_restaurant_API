@@ -61,7 +61,7 @@ class Reviews {
     // Deletes food by using its id
     async deleteReviewById(id) {
         // Delete food from the database
-        var result = this.Reviews.deleteOne({ id: id }).lean().exec();
+        var result = this.Reviews.deleteOne({ _id: id }).lean().exec();
 
         if (result != null) {
             return `Successful in deleting food ${id}!`;
