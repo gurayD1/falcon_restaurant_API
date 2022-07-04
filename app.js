@@ -443,6 +443,29 @@ app.delete('/foods/:id', async function (req, res) {
     }
 });
 
+app.delete('/deletefoods/:id', async function (req, res) {
+    // Get the id
+    let id = req.params.id
+
+    // Delete the food
+    var result = await db.deleteFoodByMongoId(id);
+    try {
+        if (result) {
+            res.status(200).json({
+                message: result
+            });
+        } else {
+            res.status(404).json({
+                error: 'There are no food matches with that ID!'
+            });
+        }
+    } catch {
+        res.status(400).json({
+            error_message: `Error occurred when deleting a food with id: ${id}, ${error}`
+        });
+    }
+});
+
 //add a new subscriber to the newsletter
 app.post('/newsletter', async function (req, res) {
     var newSub = await newsdb.addNewSubscriber(req.body)

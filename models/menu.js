@@ -118,6 +118,19 @@ class Menu {
             return 'No results found';
         }
     }
+    // Deletes food by using object id
+    async deleteFoodByMongoId(id) {
+        // Delete food from the database
+        var ObjectId = require('mongodb').ObjectID;
+        var result = this.Menu.deleteOne( { "_id" : new ObjectId(`${id}`) } ).lean().exec();
+
+        if (result != null) {
+            return `Successful in deleting food ${id}!`;
+        }
+        else {
+            return 'No results found';
+        }
+    }
 }
 
 // Export the class
