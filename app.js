@@ -637,7 +637,7 @@ app.get('/orders', async function (req, res) {
 
 // Add new order document to collection using the body of the request
 app.post('/orders', async function (req, res) {
-    var newOrder = await reviewsdb.addNewOrder(req.body);
+    var newOrder = await ordersdb.addNewOrder(req.body);
     try {
         res.status(201).json({
             message: newOrder
