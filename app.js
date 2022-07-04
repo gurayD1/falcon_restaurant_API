@@ -341,7 +341,8 @@ app.get('/', function (req, res) {
 
 // Add new food document to collection using the body of the request
 app.post('/foods', async function (req, res) {
-    var newFood = await db.addNewFood(req.body);
+   // var newFood = await db.addNewFood(req.body);
+   var newFood = await db.addNewFood(req.body);
     try {
         res.status(201).json({
             message: newFood

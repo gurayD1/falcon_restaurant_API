@@ -37,12 +37,45 @@ class Menu {
         // Create a new menu object with the data inserted
         var menuNew = new this.Menu(data);
 
+       let isIdAvailable = await this.Menu.findOne({ food_id: menuNew.food_id }) ? false : true
+
+        if(isIdAvailable){
+          //  console.log("available")
+          //  console.log(menuNew)
+
+        }else{
+          //  console.log("is not available")
+            var lastId = { food_id: '' }
+            lastId = await this.Menu.find({},{ food_id: 1, _id:0 }).sort({_id:-1}).limit(1)
+
+            var newId = parseInt(lastId[0].food_id)
+            newId += 1
+            //console.log(newId)
+            menuNew.food_id = newId
+            //console.log(menuNew)
+        }
+        
         // Save to the database
         await menuNew.save();
 
         // Show success message
         return `${menuNew._id} saved successfully!`;
     }
+
+        // // Add a new document in foods collection using data passed
+        // async addNewFood2(data) {
+         
+            
+        // // var lastID = await  this.Menu.aggregate([
+        // //         { $addFields: { lastElem: { $last: "" } } }
+        // //      ])
+        //     var lastId = { food_id: '25' }
+        //     lastId = await   this.Menu.find({},{ food_id: 1, _id:0 }).sort({_id:-1}).limit(1)
+        //     console.log(lastId[0].food_id)
+    
+        //     // Show success message
+        //     return `${lastId.food_id} last id!`;
+        // }
 
     // Get all food from database depending on user input
     getAllFood() {
