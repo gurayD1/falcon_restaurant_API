@@ -4,11 +4,11 @@ var Schema = mongoose.Schema;
 
 // Create restaurant schema
 OrderSchema = new Schema({
-    name: string,
-    phone: string,
-    cart: string,
-    total: string,
-    date: string,
+    name: String,
+    phone: String,
+    cart: String,
+    total: String,
+    date: String,
 }, { collection: 'orders' });
 
 
