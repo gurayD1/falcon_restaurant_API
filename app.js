@@ -19,12 +19,14 @@ const User = require('./models/users');
 const Newsletter = require('./models/newsletter');
 const Booking = require('./models/booking');
 const Reviews = require('./models/reviews');
+const Order = require('./models/orders');
 const SendEmail = require('./utils/SendEmail')
 const db = new Menu();
 const dbUser = new User();
 const newsdb = new Newsletter();
 const bookingdb = new Booking();
 const reviewsdb = new Reviews();
+const ordersdb = new Order();
 
 db.initialize(connectionString);
 dbUser.changeModel();
@@ -614,6 +616,23 @@ app.delete('/reviews/:id', async function (req, res) {
     }
 });
 
+// Get all orders
+app.get('/orders', async function (req, res) {
+    var result = await ordersdb.getAllOrders();
+    try {
+        if (result.length > 0) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({
+                error: 'There are no orders!',
+            })
+        }
+    } catch (err) {
+        res.status(400).json({
+            error: `${err}`
+        })
+    }
+});
 
 // Check if user is authenticated
 function ensureLogin(req, res, next) {
