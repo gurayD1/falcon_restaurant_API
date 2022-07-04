@@ -635,6 +635,20 @@ app.get('/orders', async function (req, res) {
     }
 });
 
+// Add new order document to collection using the body of the request
+app.post('/orders', async function (req, res) {
+    var newOrder = await reviewsdb.addNewOrder(req.body);
+    try {
+        res.status(201).json({
+            message: newOrder
+        });
+    } catch (err) {
+        res.status(400).json({
+            error: err
+        });
+    }
+})
+
 // Check if user is authenticated
 function ensureLogin(req, res, next) {
 
