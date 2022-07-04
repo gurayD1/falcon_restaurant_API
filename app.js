@@ -635,6 +635,28 @@ app.get('/orders', async function (req, res) {
     }
 });
 
+// Retrieves order which has a specific email from the database
+app.get('/orders/:email', async function (req, res) {
+    // Get the id
+    let email = req.params.email
+    var result = await ordersdb.getOrderByEmail(email);
+
+    // Show result or error message
+    try {
+        if (result) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({
+                error: 'There are no orders with that email!'
+            });
+        }
+    } catch (err) {
+        res.status(400).json({
+            error: err
+        });
+    }
+});
+
 // Add new order document to collection using the body of the request
 app.post('/orders', async function (req, res) {
     var newOrder = await ordersdb.addNewOrder(req.body);

@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 
 // Create restaurant schema
 OrderSchema = new Schema({
+    email: String,
     name: String,
     phone: String,
     cart: String,
@@ -47,9 +48,9 @@ class Order {
         return this.Order.find();
     }
 
-    // Get order by its id from the database
-    getOrderById(_id) {
-        var result = this.Order.findOne({ _id: id }).lean().exec();
+    // Get orders by email from the database
+    getOrderByEmail(email) {
+        var result = this.Order.find({ email: email }).lean().exec();
         // Return result or error message
         if (result != null) {
             return result;
