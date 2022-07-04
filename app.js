@@ -80,6 +80,7 @@ app.post('/login', async function (req, res) {
                     user: {
                         id: user.id,
                         email: user.email,
+                        accountType: user.accountType
                     },
                 };
 
@@ -201,6 +202,7 @@ app.post('/registration', async function (req, res) {
             user: {
                 id: newUser.id,
                 email: newUser.email,
+                accountType: newUser.accountType
             },
         };
 

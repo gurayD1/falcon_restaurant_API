@@ -5,7 +5,8 @@ var Schema = mongoose.Schema;
 // Create restaurant schema
 UserSchema = new Schema({
     email: String,
-    password: String
+    password: String,
+    accountType: String
 
 }, { collection: 'users' });
 
