@@ -33,6 +33,7 @@ dbUser.changeModel();
 newsdb.initialize(connectionString);
 bookingdb.initialize(connectionString);
 reviewsdb.initialize(connectionString);
+ordersdb.initialize(connectionString);
 //dbUser.initialize(connectionString);
 
 
