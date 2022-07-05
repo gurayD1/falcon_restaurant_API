@@ -14,6 +14,9 @@ var app = express();
 // Configure the database
 var dbConfig = require('./config/database');
 const connectionString = dbConfig.url;
+const Faq = require('./models/faq');
+const About = require('./models/about');
+const Image = require('./models/images');
 const Menu = require('./models/menu');
 const User = require('./models/users');
 const Newsletter = require('./models/newsletter');
@@ -27,6 +30,9 @@ const newsdb = new Newsletter();
 const bookingdb = new Booking();
 const reviewsdb = new Reviews();
 const ordersdb = new Order();
+const dbfaq = new Faq();
+const dbabout = new About();
+const dbimage = new Image();
 
 db.initialize(connectionString);
 dbUser.changeModel();
@@ -34,6 +40,9 @@ newsdb.initialize(connectionString);
 bookingdb.initialize(connectionString);
 reviewsdb.initialize(connectionString);
 ordersdb.initialize(connectionString);
+dbfaq.initialize(connectionString);
+dbabout.initialize(connectionString);
+dbimage.initialize(connectionString);
 //dbUser.initialize(connectionString);
 
 
@@ -337,6 +346,307 @@ app.delete('/user/:id', ensureLogin, async function (req, res) {
 // Root
 app.get('/', function (req, res) {
     res.send('Menu API');
+});
+
+// Get all faq objects
+app.get('/faq', async function (req, res) {
+    var result = await dbfaq.getAllFaq();
+    try {
+        if (result.length > 0) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({
+                error: 'There is no faq!',
+            })
+        }
+    } catch (err) {
+        res.status(400).json({
+            error: `${err}`
+        })
+    }
+});
+
+app.post('/faq', async function (req, res) {
+   
+    var newFaq = await dbfaq.addNewFaq(req.body);
+     try {
+         res.status(201).json({
+             message: newFaq
+         });
+     } catch (err) {
+         res.status(400).json({
+             error: err
+         });
+     }
+ })
+
+ app.get('/faq/:id', async function (req, res) {
+    // Get the id
+    let id = req.params.id
+    var result = await dbfaq.getFaqById(id);
+
+    // Show result or error message
+    try {
+        if (result) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({
+                error: 'There are no faq matches with that ID!'
+            });
+        }
+    } catch (err) {
+        res.status(400).json({
+            error: err
+        });
+    }
+});
+
+app.delete('/faq/:id', async function (req, res) {
+    // Get the id
+    let id = req.params.id
+
+    // Delete the faq
+    var result = await dbfaq.deleteFaqById(id);
+    try {
+        if (result) {
+            res.status(200).json({
+                message: result
+            });
+        } else {
+            res.status(404).json({
+                error: 'There are no faq matches with that ID!'
+            });
+        }
+    } catch {
+        res.status(400).json({
+            error_message: `Error occurred when deleting a faq with id: ${id}, ${error}`
+        });
+    }
+});
+
+app.delete('/deletefaq/:id', async function (req, res) {
+    // Get the id
+    let id = req.params.id
+
+    // Delete the faq
+    var result = await dbfaq.deleteFaqByMongoId(id);
+    try {
+        if (result) {
+            res.status(200).json({
+                message: result
+            });
+        } else {
+            res.status(404).json({
+                error: 'There are no faq matches with that ID!'
+            });
+        }
+    } catch {
+        res.status(400).json({
+            error_message: `Error occurred when deleting a faq with id: ${id}, ${error}`
+        });
+    }
+});
+
+/*******************************************/
+
+// Get all image objects
+app.get('/images', async function (req, res) {
+    var result = await dbimage.getAllImage();
+    try {
+        if (result.length > 0) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({
+                error: 'There is no image!',
+            })
+        }
+    } catch (err) {
+        res.status(400).json({
+            error: `${err}`
+        })
+    }
+});
+
+app.post('/images', async function (req, res) {
+
+    var newImage = await dbimage.addNewImage(req.body);
+     try {
+         res.status(201).json({
+             message: newImage
+         });
+     } catch (err) {
+         res.status(400).json({
+             error: err
+         });
+     }
+ })
+
+ app.get('/images/:id', async function (req, res) {
+    // Get the id
+    let id = req.params.id
+    var result = await dbimage.getImageById(id);
+
+    // Show result or error message
+    try {
+        if (result) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({
+                error: 'There are no image matches with that ID!'
+            });
+        }
+    } catch (err) {
+        res.status(400).json({
+            error: err
+        });
+    }
+});
+
+app.delete('/images/:id', async function (req, res) {
+    // Get the id
+    let id = req.params.id
+
+    // Delete the image
+    var result = await dbimage.deleteImageById(id);
+    try {
+        if (result) {
+            res.status(200).json({
+                message: result
+            });
+        } else {
+            res.status(404).json({
+                error: 'There are no image matches with that ID!'
+            });
+        }
+    } catch {
+        res.status(400).json({
+            error_message: `Error occurred when deleting a image with id: ${id}, ${error}`
+        });
+    }
+});
+
+app.delete('/deleteimage/:id', async function (req, res) {
+    // Get the id
+    let id = req.params.id
+
+    // Delete the image
+    var result = await dbimage.deleteImageByMongoId(id);
+    try {
+        if (result) {
+            res.status(200).json({
+                message: result
+            });
+        } else {
+            res.status(404).json({
+                error: 'There are no image matches with that ID!'
+            });
+        }
+    } catch {
+        res.status(400).json({
+            error_message: `Error occurred when deleting a image with id: ${id}, ${error}`
+        });
+    }
+});
+
+/**************************************************/
+
+// Get all image objects
+app.get('/about', async function (req, res) {
+    var result = await dbabout.getAllAbout();
+    try {
+        if (result.length > 0) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({
+                error: 'There is no person!',
+            })
+        }
+    } catch (err) {
+        res.status(400).json({
+            error: `${err}`
+        })
+    }
+});
+
+app.post('/about', async function (req, res) {
+
+    var newAbout = await dbabout.addNewAbout(req.body);
+     try {
+         res.status(201).json({
+             message: newAbout
+         });
+     } catch (err) {
+         res.status(400).json({
+             error: err
+         });
+     }
+ })
+
+ app.get('/about/:id', async function (req, res) {
+    // Get the id
+    let id = req.params.id
+    var result = await dbabout.getAboutById(id);
+
+    // Show result or error message
+    try {
+        if (result) {
+            res.status(200).json(result);
+        } else {
+            res.status(404).json({
+                error: 'There are no person matches with that ID!'
+            });
+        }
+    } catch (err) {
+        res.status(400).json({
+            error: err
+        });
+    }
+});
+
+app.delete('/about/:id', async function (req, res) {
+    // Get the id
+    let id = req.params.id
+
+    // Delete the person
+    var result = await dbabout.deleteAboutById(id);
+    try {
+        if (result) {
+            res.status(200).json({
+                message: result
+            });
+        } else {
+            res.status(404).json({
+                error: 'There are no person matches with that ID!'
+            });
+        }
+    } catch {
+        res.status(400).json({
+            error_message: `Error occurred when deleting a person with id: ${id}, ${error}`
+        });
+    }
+});
+
+app.delete('/deleteabout/:id', async function (req, res) {
+    // Get the id
+    let id = req.params.id
+
+    // Delete the person
+    var result = await dbabout.deleteAboutByMongoId(id);
+    try {
+        if (result) {
+            res.status(200).json({
+                message: result
+            });
+        } else {
+            res.status(404).json({
+                error: 'There are no person matches with that ID!'
+            });
+        }
+    } catch {
+        res.status(400).json({
+            error_message: `Error occurred when deleting a person with id: ${id}, ${error}`
+        });
+    }
 });
 
 // Add new food document to collection using the body of the request
